@@ -1,3 +1,4 @@
+
 # 📘 RAG Application with ChromaDB + Groq LLM
 
 This project is a **Retrieval-Augmented Generation (RAG) system** built with **FastAPI**, **ChromaDB Cloud**, and **Groq LLM (Llama-3.3-70B-Versatile)**.  
@@ -20,25 +21,24 @@ It allows you to:
 
 ## 📂 Project Structure
 
+```
 
-
-rag_app/
-├── main.py # FastAPI entrypoint
-├── chroma_connection.py # Connects to ChromaDB Cloud
-├── llm.py # Groq LLM wrapper
+rag\_app/
+├── main.py                 # FastAPI entrypoint
+├── chroma\_connection.py    # Connects to ChromaDB Cloud
+├── llm.py                  # Groq LLM wrapper
 ├── routes/
-│ ├── documents.py # /api/documents → add docs
-│ ├── query.py # /api/query → retrieve docs
-│ └── ask.py # /api/ask → full RAG pipeline
+│   ├── documents.py        # /api/documents → add docs
+│   ├── query.py            # /api/query → retrieve docs
+│   └── ask.py              # /api/ask → full RAG pipeline
 ├── models/
-│ ├── request_models.py # Pydantic request schemas
-├── docs/ # Folder to store raw text files (optional)
-├── requirements.txt # Python dependencies
-├── .env.example # Example environment config
-└── README.md # Documentation
+│   ├── request\_models.py   # Pydantic request schemas
+├── docs/                   # Folder to store raw text files (optional)
+├── requirements.txt        # Python dependencies
+├── .env.example            # Example environment config
+└── README.md               # Documentation
 
-
-
+````
 
 ---
 
@@ -53,69 +53,107 @@ CHROMA_DATABASE=your_chroma_database
 
 # Groq API
 GROQ_API_KEY=your_groq_api_key
+````
 
+---
 
+## 📦 Installation
 
+```bash
 git clone <your-repo-url>
 cd rag_app
 pip install -r requirements.txt
 pip install sentence-transformers groq python-dotenv fastapi uvicorn chromadb
+```
+
+---
+
+## 🚀 Running the App
+
+```bash
 uvicorn main:app --reload --port 8000
+```
 
+Visit API docs:
+👉 [http://localhost:8000/docs](http://localhost:8000/docs)
 
+---
 
-# POST /api/documents/
-``` python
+## 🔹 API Endpoints
 
-  {
-    "ids": ["policy_1"],
-    "documents": ["Employees get 2 wellness days per month at Acme Corp."],
-    "metadatas": [{"source": "company_policies.txt"}]
-  }
-  Response
-  {
+### 1. Add Documents
+
+**POST** `/api/documents/`
+
+Request:
+
+```json
+{
+  "ids": ["policy_1"],
+  "documents": ["Employees get 2 wellness days per month at Acme Corp."],
+  "metadatas": [{"source": "company_policies.txt"}]
+}
+```
+
+Response:
+
+```json
+{
   "message": "Documents added successfully",
   "ids": ["policy_1"]
 }
-
 ```
 
+---
 
-# POST /api/query/
-``` python
+### 2. Query Documents
+
+**POST** `/api/query/`
+
 Request:
 
+```json
 {
   "question": "How many wellness days do employees get?",
   "top_k": 3
 }
-
+```
 
 Response (from ChromaDB):
 
+```json
 {
   "results": {
     "documents": [["Employees get 2 wellness days per month at Acme Corp."]],
     "metadatas": [[{"source": "company_policies.txt"}]]
   }
 }
-``` python
-3. Ask Question (RAG)
+```
 
-# POST /api/ask/
+---
+
+### 3. Ask Question (RAG)
+
+**POST** `/api/ask/`
 
 Request:
 
+```json
 {
   "question": "How many wellness days per month do employees get at Acme Corp?",
   "top_k": 3
 }
-
+```
 
 Response (Groq LLM):
 
+```json
 {
   "question": "How many wellness days per month do employees get at Acme Corp?",
   "answer": "Employees at Acme Corp are allowed two wellness days per month in addition to regular vacation days.",
   "sources": [{"source": "company_policies.txt"}]
 }
+```
+
+---
+
